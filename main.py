@@ -34,7 +34,7 @@ def create_tweet(tweet: CreateTweet = Body(...)):
 
 @app.delete('/tweets/{model_id}')
 def delete_tweet(model_id: int = Path(..., ge=1)):
-    tweet = list(filter(lambda t: t.id == model_id, tweetsdb))
+    tweet = filter_tweets_by_id(model_id)
     if tweet:
         tweetsdb.remove(tweet[0])
     else:
@@ -43,3 +43,20 @@ def delete_tweet(model_id: int = Path(..., ge=1)):
         'data': tweetsdb,
         'total': len(tweetsdb)
     }
+
+
+@app.get('/tweets/{model_id}')
+def show_tweet(model_id: int):
+    tweet = filter_tweets_by_id(model_id)
+
+    if not tweet:
+        raise HTTPException(status_code=404, detail='Tweet not found')
+
+    return {
+        'data': tweet[0],
+        'total': 1
+    }
+
+
+def filter_tweets_by_id(model_id: int) -> List[Tweet]:
+    return list(filter(lambda t: t.id == model_id, tweetsdb))
