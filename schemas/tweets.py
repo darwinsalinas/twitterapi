@@ -8,3 +8,8 @@ class Tweet(BaseModel):
     user_id: int
     tweet_text: str = Field(min_length=1, max_length=250)
     tweet_date: datetime = Field(default=datetime.now())
+
+
+class CreateTweet(BaseModel):
+    user_id: int = Field(gt=0)
+    tweet_text: str = Field(min_length=1, max_length=250)

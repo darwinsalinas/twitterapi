@@ -1,8 +1,9 @@
+from datetime import datetime
 from typing import List
 
 from fastapi import FastAPI, Body
 
-from schemas.tweets import Tweet
+from schemas.tweets import Tweet, CreateTweet
 
 app = FastAPI()
 
@@ -26,6 +27,6 @@ def home():
 
 
 @app.post('/tweets')
-def create_tweet(tweet: Tweet = Body(...)):
-    print(tweet)
+def create_tweet(tweet: CreateTweet = Body(...)):
+    tweet = Tweet(**tweet.dict(), id=len(tweetsdb) + 1, tweet_date=datetime.now())
     tweetsdb.append(tweet)
